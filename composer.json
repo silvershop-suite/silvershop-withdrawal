@@ -1,0 +1,77 @@
+{
+    "name": "silvershop/withdrawal",
+    "description": "EU/NL right-of-withdrawal (herroepingsknop) for SilverShop: a persistent, guest-capable withdrawal button available for the whole 14-day cooling-off window, a minimal no-account withdrawal form, an immediate on-screen + emailed confirmation, and a per-line exemption contract. Defensible-design machinery — verify the statutory copy, deadlines and exemptions with legal/DPO before launch.",
+    "type": "silverstripe-vendormodule",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "silverstripe",
+        "silvershop",
+        "ecommerce",
+        "shop",
+        "withdrawal",
+        "herroepingsrecht",
+        "herroepingsknop",
+        "widerruf",
+        "consumer-rights",
+        "compliance"
+    ],
+    "authors": [
+        {
+            "name": "Remy van Aartjes",
+            "email": "remy@xd.nl"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "silverstripe/framework": "^6.0",
+        "silvershop/core": "^6"
+    },
+    "require-dev": {
+        "cambis/silverstan": "^2.1",
+        "silverstripe/recipe-testing": "^4",
+        "silverstripe/sqlite3": "^4",
+        "squizlabs/php_codesniffer": "^3.0"
+    },
+    "suggest": {
+        "silvershop/order-confirmation": "Provides the opaque GuestToken the guest online-withdrawal function reuses. Required for the guest one-click button; without it only logged-in members self-serve (guests fall back to the model-form / email route).",
+        "silvershop/invoicing": "Automatic credit-note on refund — the withdrawal records/links the resulting ShopCreditMemo.",
+        "silvershop/ledger": "Posts the refund credit-memo to the ledger (via invoicing).",
+        "silvershop/notification-log": "Logs the withdrawal-confirmation email (durable-medium audit) from the stamped X-SilverShop-Notification-Key header.",
+        "silvershop/personalisation": "Flags personalised lines as withdrawal-exempt (CRD Art. 16(c)) through the updateWithdrawable hook.",
+        "silvershop/product-status": "Flags made-to-order lines as withdrawal-exempt (CRD Art. 16(c)) through the updateWithdrawable hook.",
+        "silvershop/storefront": "Ships the styled button / form / confirmation templates (this module ships functional fallbacks only).",
+        "silvershop/order-admin": "Surfaces the withdrawal tab / badges in the modern order screen."
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.x-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "SilverShop\\Withdrawal\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SilverShop\\Withdrawal\\Tests\\": "tests/php/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "silverstripe/recipe-plugin": true,
+            "silverstripe/vendor-plugin": true,
+            "php-http/discovery": false
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test:coverage": "vendor/bin/phpunit --coverage-html coverage --coverage-text",
+        "stan": "vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=-1",
+        "lint": "vendor/bin/phpcs",
+        "lint:fix": "vendor/bin/phpcbf"
+    }
+}

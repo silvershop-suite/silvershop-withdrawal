@@ -1,0 +1,55 @@
+---
+Name: silvershop-withdrawal
+After:
+  - '#silvershop'
+---
+# The 14-day cooling-off window, the DeliveredAt signal, the WithdrawalLink and the per-order
+# withdrawable/exemption accessors.
+SilverShop\Model\Order:
+  extensions:
+    - SilverShop\Withdrawal\Extension\OrderWithdrawalExtension
+
+# The frozen per-line exemption snapshot + the IsWithdrawable() contract and updateWithdrawable hook.
+SilverShop\Model\OrderItem:
+  extensions:
+    - SilverShop\Withdrawal\Extension\OrderItemWithdrawalExtension
+
+# The manual, module-independent "withdrawal exempt" flag on the buyables.
+SilverShop\Page\Product:
+  extensions:
+    - SilverShop\Withdrawal\Extension\BuyableWithdrawalExtension
+
+SilverShop\Model\Variation\Variation:
+  extensions:
+    - SilverShop\Withdrawal\Extension\BuyableWithdrawalExtension
+
+# The guest-capable withdrawal surface: withdraw/{ID}?t={GuestToken} (reuses order-confirmation's token).
+# A prefix rule — the controller's own $url_handlers parse the {ID} / WithdrawalForm segments.
+SilverStripe\Control\Director:
+  rules:
+    'withdraw': 'SilverShop\Withdrawal\Control\WithdrawalController'
+
+# --------------------------------------------------------------------------------------------------
+# Cooling-off defaults. ALL of these are "verify with legal/DPO" — the conservative defaults keep the
+# button OPEN longer rather than closing it early (closing early is the compliance risk: a fine + the
+# cooling-off period auto-extends by up to ~12 months).
+# --------------------------------------------------------------------------------------------------
+SilverShop\Withdrawal\Extension\OrderWithdrawalExtension:
+  # CRD Art. 9 — the statutory cooling-off period. (verify)
+  cooling_off_days: 14
+  # Optional extra grace added to the goods deadline. Default 0.
+  grace_days: 0
+  # When goods are Dispatched but DeliveredAt is unknown, this is the ASSUMED transit used only to
+  # derive a soft/admin-reminder deadline (never to hard-close unless auto_close_without_delivery).
+  assumed_transit_days: 14
+  # Conservative default: keep the button OPEN while delivery is unknown. Flip to true only after a
+  # legal risk-appetite decision (then goods auto-close at Dispatched + assumed_transit_days + cooling_off_days).
+  auto_close_without_delivery: false
+  # 'goods' => deadline anchored on DeliveredAt (physical possession, CRD Art. 9(2)(b));
+  # 'placed' => deadline anchored on Placed (services / digital content, CRD Art. 9(2)(a)/(c)).
+  # A digital/service shop can set this to 'placed', or veto per order via the updateWithdrawalBasis hook.
+  default_basis: 'goods'
+  # v1 keeps refund AND order status MANUAL (the admin handles them). When a shop opts in, a confirmed
+  # whole-order withdrawal flips the core Order status to MemberCancelled (the honest existing enum value;
+  # a dedicated 'Withdrawn' status would need a core enum change — see README "Order status").
+  cancel_order_on_withdrawal: false
