@@ -75,12 +75,16 @@ class WithdrawalConfirmationEmail
         return $email;
     }
 
-    /** Build, send, and mark the request acknowledged. Best-effort: a transport failure is logged, not fatal. */
+    /**
+     * Build + send, fully best-effort. BOTH construction and sending are wrapped: email is an acknowledgement
+     * of an already-recorded, already-confirmed withdrawal, so no email problem (an unconfigured mail
+     * transport, an empty from-address, a template error) may ever break the withdrawal flow or the on-screen
+     * confirmation — it is logged and the request simply stays un-acknowledged.
+     */
     public static function send_for(WithdrawalRequest $request): bool
     {
-        $email = self::create_for($request);
-
         try {
+            $email = self::create_for($request);
             $email->send();
         } catch (\Throwable $throwable) {
             Injector::inst()->get(LoggerInterface::class)->error(
