@@ -1,4 +1,4 @@
-# silvershop/withdrawal
+# silvershop-suite/withdrawal
 
 The EU/NL **right-of-withdrawal** function for [SilverShop](https://github.com/silvershop/silvershop-core) —
 a persistent, guest-capable **withdrawal button** ("mijn aankoop ongedaan maken" / *Widerrufsbutton*),
@@ -20,7 +20,7 @@ everything hangs off existing extension points.
 A clear, easy-to-find withdrawal function — available the whole 14-day window, **not login-walled**, with an
 **immediate confirmation on a durable medium** — is a standing obligation for distance selling in the EU. The
 off-the-shelf platforms are mostly account-centric; a compliant **guest** withdrawal is the gap this fills
-cheaply, by reusing the opaque order token `silvershop/order-confirmation` already provides.
+cheaply, by reusing the opaque order token `silvershop-suite/order-confirmation` already provides.
 
 ## What it does (v1)
 
@@ -79,7 +79,7 @@ A digital/service shop sets `default_basis: 'placed'`, or overrides per order vi
 
 ## Guest access (reuses order-confirmation)
 
-The guest **online** button needs `silvershop/order-confirmation` — it owns the `GuestToken` that makes an
+The guest **online** button needs `silvershop-suite/order-confirmation` — it owns the `GuestToken` that makes an
 order reachable off-session and across devices. It is a composer **`suggest`**: without it, logged-in
 **members** still self-serve (resolved by the owning-member branch), and guests fall back to the
 email/model-form route (the printable model form is a v2 deliverable). No parallel token machinery is added.
@@ -91,7 +91,7 @@ email/model-form route (the printable model form is a v2 deliverable). No parall
 - `OrderItem::IsWithdrawable()` returns a **frozen snapshot** captured at placement (`onPlacement`), so later
   product edits never change a placed order's rights.
 - Deriving the snapshot fires **`updateWithdrawable(bool &$withdrawable, string &$reason)`**, the veto hook
-  the planned `silvershop/personalisation` and `silvershop/product-status` modules consume:
+  the planned `silvershop-suite/personalisation` and `silvershop-suite/product-status` modules consume:
 
   ```php
   // in a personalisation OrderItem extension
@@ -110,7 +110,7 @@ email/model-form route (the printable model form is a v2 deliverable). No parall
 ## Refund + order status
 
 - **Refund (manual, v1):** a human issues the refund through the normal Omnipay/payment flow. When
-  `silvershop/invoicing` + `silvershop/ledger` are present, flipping a `Payment` to `Refunded` already
+  `silvershop-suite/invoicing` + `silvershop-suite/ledger` are present, flipping a `Payment` to `Refunded` already
   auto-creates the credit memo and posts it to the ledger — this module **records/links** the memo
   (`WithdrawalRequest.CreditMemoID`), it does not rebuild any accounting. v2 triggers the refund.
 - **Order status:** v1 does **not** change the core `Order.Status` automatically. When a shop opts in
@@ -131,13 +131,13 @@ The module ships **functional, unstyled** templates so it works headless:
 
 A theme overrides any of these by shipping the same path. Because core's confirmation page and order email
 expose **no content-injection hook today**, surfacing the button there is done by a **theme template
-override** (the `silvershop/storefront` theme adds `<% include SilverShop\Withdrawal\Includes\WithdrawalButton %>`
+override** (the `silvershop-suite/storefront` theme adds `<% include SilverShop\Withdrawal\Includes\WithdrawalButton %>`
 to `CheckoutPage_complete.ss`, the account order-detail view and the order email). Upstreaming a proper
 `updateConfirmationData` hook + email slot is a v2 item.
 
 ## Notification-log audit
 
-`WithdrawalConfirmationEmail` stamps two headers so an optional `silvershop/notification-log` records the send
+`WithdrawalConfirmationEmail` stamps two headers so an optional `silvershop-suite/notification-log` records the send
 with **zero coupling** (the log only reads headers):
 
 ```
@@ -148,11 +148,11 @@ X-SilverShop-Notification-Key: withdrawal.confirmation
 ## Installation
 
 ```bash
-composer require silvershop/withdrawal
+composer require silvershop-suite/withdrawal
 ```
 
 Then run `dev/build?flush=all`. Requires `silvershop/core ^6` (CMS 6, PHP 8.3 / 8.4). Strongly suggested:
-`silvershop/order-confirmation` (the guest token), `silvershop/storefront` (styled templates).
+`silvershop-suite/order-confirmation` (the guest token), `silvershop-suite/storefront` (styled templates).
 
 ## v2 roadmap
 
