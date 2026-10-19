@@ -17,8 +17,12 @@
     ],
     "authors": [
         {
-            "name": "Remy van Aartjes",
-            "email": "remy@xd.nl"
+            "name": "Remy Vaartjes",
+            "email": "remy@xd.nl",
+            "role": "Lead developer"
+        },
+        {
+            "name": "SilverShop-Suite Contributors"
         }
     ],
     "require": {
