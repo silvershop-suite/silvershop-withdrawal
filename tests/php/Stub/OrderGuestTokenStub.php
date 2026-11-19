@@ -9,7 +9,7 @@ use SilverStripe\Core\Extension;
 use SilverStripe\Dev\TestOnly;
 
 /**
- * Stands in for silvershop/order-confirmation's GuestToken (a composer `suggest`, so it is NOT installed in
+ * Stands in for silvershop-suite/order-confirmation's GuestToken (a composer `suggest`, so it is NOT installed in
  * the clean room). Lets the controller test exercise the real token-authorisation branch.
  *
  * @extends Extension<Order>

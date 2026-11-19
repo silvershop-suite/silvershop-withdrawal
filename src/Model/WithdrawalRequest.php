@@ -70,7 +70,7 @@ class WithdrawalRequest extends DataObject
         'AcknowledgedAt' => 'Datetime',
         'WithinWindow' => 'Boolean',
         'DeadlineAt' => 'Datetime',
-        // Plain id (not a typed has_one) so the module installs without silvershop/invoicing. It links the
+        // Plain id (not a typed has_one) so the module installs without silvershop-suite/invoicing. It links the
         // ShopCreditMemo once a refund is issued; v2 formalises the relation + triggers the refund.
         'CreditMemoID' => 'Int',
     ];

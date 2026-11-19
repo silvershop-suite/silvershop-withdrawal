@@ -19,7 +19,7 @@ use SilverStripe\Core\Injector\Injector;
  * Self-contained styling (its own `<style>` block, inline-safe) — it deliberately does NOT `<% include %>`
  * the core email shell, which needs silvershop/core 6.2.0, so the module stays installable on core 6.1.
  *
- * It stamps two headers so an optional `silvershop/notification-log` can record the send with zero coupling
+ * It stamps two headers so an optional `silvershop-suite/notification-log` can record the send with zero coupling
  * (the log only READS headers):
  *   X-SilverShop-Order-ID: {OrderID}
  *   X-SilverShop-Notification-Key: withdrawal.confirmation
